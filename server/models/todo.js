@@ -4,7 +4,7 @@ var ToDo = mongoose.model('ToDo', {
   text :{
     type: String,
     minlength: 1,
-    lowercase: true,
+    //lowercase: true,
     trim: true,
     required: true
   },

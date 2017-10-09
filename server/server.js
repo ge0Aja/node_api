@@ -17,7 +17,15 @@ app.post('/todos', (req,res) => {
     text : req.body.text
   });
   todo.save().then((doc) => {
-    res.send(doc._id);
+    res.send(doc);
+  },(err) => {
+    res.status(400).send(err);
+  })
+});
+
+app.get('/todos',(req,res)=>{
+  ToDo.find().then((todos)=>{
+    res.send({todos});
   },(err) => {
     res.status(400).send(err);
   })
@@ -26,3 +34,8 @@ app.post('/todos', (req,res) => {
 app.listen(PORT,() => {
   console.log(`Server is Up on port ${PORT}`);
 });
+
+
+module.exports = {
+  app
+};
