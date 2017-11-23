@@ -8,10 +8,12 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
-
+var {authenticate} = require('./middleware/authenticate');
 var app = express();
 const port = process.env.PORT;
 
+
+//used in every route
 app.use(bodyParser.json());
 
 app.post('/users',(req,res) => {
@@ -25,6 +27,7 @@ app.post('/users',(req,res) => {
     res.header('x-auth',token).send(user.toJSON());
   }).catch((e) => {
     res.status(400).send(e);
+  //  console.log(e);
   });
 });
 
@@ -33,10 +36,11 @@ app.post('/todos', (req, res) => {
     text: req.body.text
   });
 
-  todo.save().then((user) => {
+  todo.save().then((doc) => {
     res.send(doc);
   }).catch((e) => {
     res.status(400).send(e);
+    //console.log(e);
   });
 });
 
@@ -103,11 +107,16 @@ app.patch('/todos/:id', (req, res) => {
     if (!todo) {
       return res.status(404).send();
     }
-
     res.send({todo});
   }).catch((e) => {
     res.status(400).send();
   })
+});
+
+
+app.get('/users/me', authenticate, (req,res) => {
+  // should be chancged later on
+  res.send(req.user);
 });
 
 app.listen(port, () => {
